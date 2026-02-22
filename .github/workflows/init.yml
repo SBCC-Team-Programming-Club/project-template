@@ -47,12 +47,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
 
-      - name: Commit updated README
+      - name: Commit changes and delete workflow file
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "chore: initialize README for ${{ github.event.repository.name }}"
+          git rm .github/workflows/init.yml
+          git commit -m "chore: initialize repository"
           git push
 
       - name: Set branch protection on main
@@ -76,10 +77,3 @@ jobs:
             --fail
         env:
           GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
-
-      - name: Delete this workflow file
-        run: |
-          git pull
-          git rm .github/workflows/init.yml
-          git commit -m "chore: remove initialization workflow"
-          git push
