@@ -8,10 +8,9 @@ on:
 jobs:
   setup:
     if: github.run_number == 1
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
-      administration: write
 
     steps:
       - name: Checkout repository
