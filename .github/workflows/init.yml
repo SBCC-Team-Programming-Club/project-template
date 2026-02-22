@@ -7,7 +7,6 @@ on:
 
 jobs:
   setup:
-    # Only runs once when the repo is first created from the template
     if: github.run_number == 1
     runs-on: ubuntu-latest
     permissions:
@@ -21,7 +20,6 @@ jobs:
       - name: Rename project in README
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
-          # Replace "Project Name" with the actual repo name
           sed -i "s/Project Name/$REPO_NAME/g" README.md
           echo "✅ Renamed project to: $REPO_NAME"
 
@@ -34,21 +32,20 @@ jobs:
           git push
 
       - name: Set branch protection on main
-        uses: octokit/request-action@v2.x
-        with:
-          route: PUT /repos/{owner}/{repo}/branches/main/protection
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          required_status_checks: |
-            null
-          enforce_admins: false
-          required_pull_request_reviews: |
-            required_approving_review_count: 1
-            dismiss_stale_reviews: true
-          restrictions: |
-            null
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X PUT \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/branches/main/protection \
+            -d '{
+              "required_status_checks": null,
+              "enforce_admins": false,
+              "required_pull_request_reviews": {
+                "required_approving_review_count": 1,
+                "dismiss_stale_reviews": true
+              },
+              "restrictions": null
+            }'
 
       - name: Delete this workflow file
         run: |
@@ -56,64 +53,3 @@ jobs:
           git rm .github/workflows/init.yml
           git commit -m "chore: remove initialization workflow"
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}name: 🚀 Initialize Repository
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  setup:
-    # Only runs once when the repo is first created from the template
-    if: github.run_number == 1
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      administration: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Rename project in README
-        run: |
-          REPO_NAME="${{ github.event.repository.name }}"
-          # Replace "Project Name" with the actual repo name
-          sed -i "s/Project Name/$REPO_NAME/g" README.md
-          echo "✅ Renamed project to: $REPO_NAME"
-
-      - name: Commit updated README
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "chore: initialize project name to ${{ github.event.repository.name }}"
-          git push
-
-      - name: Set branch protection on main
-        uses: octokit/request-action@v2.x
-        with:
-          route: PUT /repos/{owner}/{repo}/branches/main/protection
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          required_status_checks: |
-            null
-          enforce_admins: false
-          required_pull_request_reviews: |
-            required_approving_review_count: 1
-            dismiss_stale_reviews: true
-          restrictions: |
-            null
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete this workflow file
-        run: |
-          git pull
-          git rm .github/workflows/init.yml
-          git commit -m "chore: remove initialization workflow"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
