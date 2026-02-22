@@ -4,11 +4,14 @@
 
 ![Project Banner](https://placehold.co/600x400?text=Project+Banner)
 
-## 👥 Team Members
+## 📋 Table of Contents
 
-| Name | GitHub | Role |
-|------|--------|------|
-| Your Name | @username | Role |
+- [About](#-about)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
+- [Team](#-team)
+- [License](#-license)
 
 ## 📖 About
 
@@ -18,28 +21,26 @@ A more detailed description of the project. What problem does it solve? Who is i
 
 ### Prerequisites
 
-List anything needed to run the project (e.g. Node.js, Python, Extra Libraries, etc.)
+List anything needed to run the project (e.g. Node.js, Python, extra libraries, etc.)
 
 ### Installation
 
 ```bash
-# Clone the repo
-# NOTE: replace "<your-repo-name>" without the " "
-# e.g: git clone https://github.com/SBCC-Team-Programming-Club/project-template
+# Clone the repo (replace <your-repo-name> with the actual repository name)
 git clone https://github.com/SBCC-Team-Programming-Club/<your-repo-name>
-
 
 # Navigate into the project
 cd <your-repo-name>
 
 # Install dependencies (if applicable)
+npm install
 ```
 
 ### Running the Project
 
 ```bash
-# Add the command or instructions to run your project here example:
-npm install
+# Add the command to run your project here
+npm start
 ```
 
 ## 📂 Project Structure
@@ -55,6 +56,12 @@ tests/      - Test files
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting any changes.
 
+## 👥 Team
+
+| Name | GitHub | Role |
+|------|--------|------|
+| Your Name | @username | Member Role |
+
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
