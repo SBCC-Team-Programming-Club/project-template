@@ -7,8 +7,10 @@ on:
 
 jobs:
   setup:
-    if: github.run_number == 1
-    runs-on: ubuntu-22.04
+    if: ${{ github.run_number == 1 }}
+
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     permissions:
       contents: write
 
@@ -17,6 +19,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Rename project in README
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
           DESCRIPTION="${{ github.event.repository.description }}"
@@ -43,20 +47,24 @@ jobs:
           sed -i "s/@username/@$CREATOR/" README.md
           sed -i "s/| Member Role |/| Project Lead |/" README.md
 
+          # Replace repo name placeholders in installation section
+          sed -i "s|SBCC-Team-Programming-Club/<your-repo-name>|SBCC-Team-Programming-Club/$REPO_NAME|g" README.md
+          sed -i "s|cd <your-repo-name>|cd $REPO_NAME|g" README.md
+
           echo "✅ Initialized README for: $REPO_NAME (creator: $DISPLAY_NAME)"
-        env:
-          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
 
       - name: Commit changes and delete workflow file
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add README.md
           git rm .github/workflows/init.yml
           git commit -m "chore: initialize repository"
           git push
 
       - name: Set branch protection on main
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
           curl -L \
             -X PUT \
@@ -74,6 +82,4 @@ jobs:
               },
               "restrictions": null
             }' \
-            --fail
-        env:
-          GH_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+            --fail-with-body
